@@ -258,31 +258,37 @@ class ProductsController extends Controller
     if ($request->isMethod('post')) {
       $data = $request->all();
       $user_id = Auth::user()->id;
-      $shippingCount = DeliveryAddress::where('user_id',$user_id)->count();
-      if ($shippingCount>0) {
-        $shippingDetail =  DeliveryAddress::where('user_id',$user_id)->first();
-      }
+      $status = 0;
+      $session_id = Session::get('session_id');
+      $userCart = DB::table('cart')->where(['session_id'=>$session_id])->get();
+      //echo "<pre>"; print_r($userCart);die;
 
-      if (empty($data['shipping_name'])|| empty($data['shipping_address'])|| empty($data['shipping_city'])||
-          empty($data['shipping_state'])|| empty($data['shipping_country'])|| empty($data['shipping_pincode'])||
-          empty($data['shipping_mobile']) ) {
-         return redirect()->back()->with('flash_message_error','Lütfen Tüm Alanları Doldurunuz!!');
-      }
+        foreach ($userCart as $key => $product) {
+        DB::table('pending_products')->insert(['user_id'=>$user_id,'shipping_name'=>$data['shipping_name'],
+        'shipping_address'=>$data['shipping_address'],'shipping_city'=>$data['shipping_city'],'shipping_country'=>$data['shipping_country'],
+       'shipping_mobile'=>$data['shipping_mobile'],'status'=>$status,'session_id'=>$session_id,'product_id'=>$product->product_id,
+       'product_code'=>$product->product_code,'product_color'=>$product->product_color,'size'=>$product->size
+       ,'price'=>$product->price,'product_name'=>$product->product_name,'quantity'=>$product->quantity]);
+     }
 
-      if ($shippingCount>0) {
-      /*  DeliveryAddress::where('id',$user_id)->update(['name'=>$data['shipping_name'],['address'=>$data['shipping_address'],
-      ['city'=>$data['shipping_city'],['name'=>$data['shipping_name'],['name'=>$data['shipping_name'],
-      ['name'=>$data['shipping_name']]);*/
-      }else {
 
-      }
 
-      //$ahippingCount = Delivery_Address::where('user_id',)
-      /*User::where('id',$user_id)->update(['name'=>$data['shipping_name'],['address'=>$data['shipping_address'],
-    ['city'=>$data['shipping_city'],['name'=>$data['shipping_name'],['name'=>$data['shipping_name'],
-    ['name'=>$data['shipping_name']])*/
     }
-    return view('products.checkout')->with(compact('shippingDetails'));
+    return view('products.checkout');
+  }
+
+  public function viewOrders(){
+      $user_id = Auth::user()->id;
+      $orders = DB::table('pending_products')->where(['status'=>0])->get();
+      //echo "<pre>";print_r($orders);die;
+    
+      //$cart = DB::table('pending_products')->where(['session_id'=>$orders->session_id])->get();
+      //echo "<pre>";print_r($cart);die;
+      return view('admin.products.view-orders')->with(compact('orders'));
+  }
+
+  public function viewOdersDetail(){
+
   }
   public function deleteCartProduct($id = null){
     DB::table('cart')->where('id',$id)->delete();

@@ -21,6 +21,13 @@
         <li><a href="{{ url('/admin/view-banners') }}">View Banners</a></li>
       </ul>
     </li>
+    <li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Orders </span><span class="label label-important">3</span></a>
+      <ul>
+        <li><a href="{{ url('/admin/view-orders') }}">Bekleyen Siparişler</a></li>
+        <li><a href="{{ url('/admin/view-orders') }}">Gönderilen Siparişler</a></li>
+        <li><a href="{{ url('/admin/view-orders') }}">İptal Edilen Siparişler</a></li>
+      </ul>
+    </li>
 
   </ul>
 </div>

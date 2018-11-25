@@ -49,4 +49,5 @@ class BannersController extends Controller
       $banners = Banner::get();
       return view('admin.banners.view_banners')->with(compact('banners'));
     }
+
 }

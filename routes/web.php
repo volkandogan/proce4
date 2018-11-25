@@ -88,6 +88,10 @@ Route::group(['middleware' =>['auth']], function() {
     Route::match(['get','post'], '/admin/add-banner','BannersController@addBanner');
     Route::get('/admin/view-banners','BannersController@viewBanner');
 
+  //Order Listin
+    Route::get('/admin/view-orders','ProductsController@viewOrders');
+    Route::get('/admin/view-details/{id}', 'ProductsController@viewOrdersDetail');
+
 });
 //Route::get('/admin/dashboard','AdminController@dashboard');
 Route::get('/logout','AdminController@logout');
